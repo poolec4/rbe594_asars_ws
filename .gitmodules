@@ -1,3 +1,6 @@
 [submodule "gazebo_models_worlds_collection"]
-	path = gazebo_models_worlds_collection
+	path = src/gazebo_models_worlds_collection
 	url = https://github.com/leonhartyao/gazebo_models_worlds_collection
+[submodule "hector-quadrotor-noetic"]
+	path = src/hector-quadrotor-noetic
+	url = https://github.com/RAFALAMAO/hector-quadrotor-noetic.git

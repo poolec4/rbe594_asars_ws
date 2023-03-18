@@ -4,7 +4,7 @@
         <arg name="debug" default="false" />
         <arg name="gui" default="true" />
         <arg name="pause" default="false" />
-        <arg name="world" default="$(find rbe595_asars)/world/empty_world.world" />
+        <arg name="world" default="$(find rbe594_asars)/world/empty_world.world" />
 
         <!-- include gazebo_ros launcher -->
         <include file="$(find gazebo_ros)/launch/empty_world.launch">
@@ -16,7 +16,7 @@
         </include>
 
         <param name="robot_description"
-                command="$(find xacro)/xacro --inorder '$(find rbe595_asars)/urdf/lidar_x.xacro'" />
+                command="$(find xacro)/xacro --inorder '$(find rbe594_asars)/urdf/lidar_x.xacro'" />
 
         <node name="lidar_spawn" pkg="gazebo_ros" type="spawn_model" output="screen"
           args="-urdf -param robot_description -model lidar_x" />
