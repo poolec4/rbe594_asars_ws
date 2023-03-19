@@ -7,7 +7,7 @@ An Autonomous Search and Rescue System (ASARS) created for the Spring 2023 RBE 5
 Clone repository:
 ```bash
 cd ~/
-git clone https://github.com/poolec4/rbe594_asars.git
+git clone https://github.com/poolec4/rbe594_asars_ws.git
 cd ~/rbe594_asars_ws/
 git submodule init
 git submodule update
