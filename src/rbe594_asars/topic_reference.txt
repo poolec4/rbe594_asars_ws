@@ -1,0 +1,39 @@
+lidar scan data (/scan):
+
+	header:                                                                                                                                                                                                                                                          [0/790]
+	  seq: [int] unique scan id                                                        
+	  stamp:                                                          
+	    secs: [int] timestamp                                                      
+	    nsecs: [int] timetamp                                              
+	  frame_id: [string] reference frame                                        
+	angle_min: [float] minimum scan angle                                    
+	angle_max: [float] maxiumum scan angle                                     
+	angle_increment: [float] increment between scan                                                                                             
+	time_increment: [float] time between measurements
+	scan_time: [float] time between scans (will always be zero)                  
+	range_min: [float] minimum sensor range                                    
+	range_max: [float] maximum sensor range                                                   
+	ranges: [float array] sensor readings corresponding to [angle_min:angle_increment:angle_max] sensor angle                      
+	intensities: [float array] sensor intensities corresponding to [angle_min:angle_increment:angle_max] sensor angle (always zero unless we change to a sensor that reports intensity)
+	
+	
+lidar reference frame (/tf - "laser0_frame"):
+
+    header: 
+      seq: [int] unique tf id
+  	  stamp: 
+		secs: [int] timestamp
+		nsecs: [int] timestamp
+      frame_id: [string] reference frame name (laser0_frame)
+    child_frame_id: [string] child frame name
+    transform: 
+      translation: 
+	x: [float] x translation
+	y: [float] y translation
+	z: [float] z translation
+      rotation: 
+	x: [float] x quat
+	y: [float] y quat
+	z: [float] Z quat
+	w: [float] w quat
+
