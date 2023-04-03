@@ -6,6 +6,8 @@
 #include "message_filters/subscriber.h"
 #include "laser_geometry/laser_geometry.h"
 #include "pcl/point_cloud.h"
+#include "pcl/filters/voxel_grid.h"
+#include "pcl/io/pcd_io.h"
 #include "pcl_conversions/pcl_conversions.h"
 
 class LaserScanToPointCloud {
@@ -41,17 +43,30 @@ public:
         return;
     }
 
-	pcl::PCLPointCloud2 newPoints;
-	pcl_conversions::toPCL(cloud, newPoints);
-	pcl::concatenate(full_cloud, newPoints, full_cloud);
-	pcl_conversions::fromPCL(full_cloud, cloud);
+    pcl::PCLPointCloud2 newPoints;
+    pcl_conversions::toPCL(cloud, newPoints);
+    pcl::concatenate(full_cloud, newPoints, full_cloud);
+    pcl_conversions::fromPCL(full_cloud, cloud);
 
     scan_pub_.publish(cloud);
 
   }
 
+  void exportVoxelGrid(){
+    pcl::PCLPointCloud2 *cloud;
+    pcl::PCLPointCloud2ConstPtr cloudPtr(cloud);
+    pcl::PCLPointCloud2 cloud_filtered;
 
-	// TODO: make function to rasterize point cloud, transform to height map, and export
+    pcl::concatenate(*cloud, full_cloud, *cloud);
+
+    pcl::VoxelGrid<pcl::PCLPointCloud2> voxelizer;
+    voxelizer.setInputCloud(cloudPtr);
+    voxelizer.setLeafSize(0.01f, 0.01f, 0.01f);
+    voxelizer.filter(cloud_filtered);
+
+    pcl::PCDWriter writer;
+    writer.write("map_grid.pcd", cloud_filtered, Eigen::Vector4f::Zero(), Eigen::Quaternionf::Identity(), false);
+  }
 
 
 };
