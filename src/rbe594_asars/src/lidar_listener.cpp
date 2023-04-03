@@ -37,7 +37,7 @@ public:
 
   void scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan_in){
     sensor_msgs::PointCloud2 cloud;
-    ROS_INFO("Starting scan");
+    ROS_INFO("Scanning");
     
     try {
         projector_.transformLaserScanToPointCloud("world", *scan_in, cloud, tf_);
@@ -74,12 +74,12 @@ public:
 
       pcl::PCDWriter writer;
       writer.write("map_grid.pcd", cloud_filtered, Eigen::Vector4f::Zero(), Eigen::Quaternionf::Identity(), false);
-      ROS_INFO("Saved map pcd");
       
     }
 
 
 };
+
 
 LaserScanToPointCloud *lstopc;
 
@@ -96,16 +96,6 @@ int main(int argc, char** argv){
   ROS_INFO("Starting...");
   lstopc = new LaserScanToPointCloud(n);
   std::signal(SIGINT, signal_handler);
-
-  // ros::Timer timer = n.createTimer(ros::Duration(1.0), signal_handler);
-  // ros::AsyncSpinner spinner(1);
-  // spinner.start();
-
-  // while (ros::ok() && std::cin.get() != '\n') {
-  //   ros::Rate(10).sleep();
-  // }
-  // spinner.stop();
-
 
   ros::spin();
   
