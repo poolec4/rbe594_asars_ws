@@ -52,39 +52,41 @@ public:
     pcl::concatenate(full_cloud, newPoints, full_cloud);
     pcl_conversions::fromPCL(full_cloud, cloud);
 
-
-    pcl::PCLPointCloud2::Ptr cloud2(new pcl::PCLPointCloud2());
-    pcl::PCLPointCloud2::Ptr cloud_filtered(new pcl::PCLPointCloud2());
-
-    pcl_conversions::toPCL(cloud, *cloud2);
-
-    pcl::VoxelGrid<pcl::PCLPointCloud2> voxelizer;
-    voxelizer.setInputCloud(cloud2);
-    voxelizer.setLeafSize(0.5f, 0.5f, 0.5f); // leaf size of 0.5m
-    voxelizer.filter(*cloud_filtered);
-
-    // pcl::PCDWriter writer;
-    // writer.write("map_grid.pcd", cloud_filtered, Eigen::Vector4f::Zero(), Eigen::Quaternionf::Identity(), false);
-    // ROS_DEBUG("Saved map pcd");
-
-    scan_pub_.publish(cloud_filtered);
+    scan_pub_.publish(cloud);
 
   }
 
-  // public:
-  //   void exportVoxelGrid(){
+  public:
+    void exportVoxelGrid(){
       
-  //   }
+      ROS_INFO("Saving map pcd...");
+      sensor_msgs::PointCloud2 cloud;
+      pcl_conversions::fromPCL(full_cloud, cloud);
+
+      pcl::PCLPointCloud2::Ptr cloud2(new pcl::PCLPointCloud2());
+      pcl::PCLPointCloud2::Ptr cloud_filtered(new pcl::PCLPointCloud2());
+      pcl_conversions::toPCL(cloud, *cloud2);
+
+      pcl::VoxelGrid<pcl::PCLPointCloud2> voxelizer;
+      voxelizer.setInputCloud(cloud2);
+      voxelizer.setLeafSize(0.5f, 0.5f, 0.5f); // leaf size of 0.5m
+      voxelizer.filter(*cloud_filtered);
+
+      pcl::PCDWriter writer;
+      writer.write("map_grid.pcd", cloud_filtered, Eigen::Vector4f::Zero(), Eigen::Quaternionf::Identity(), false);
+      ROS_INFO("Saved map pcd");
+      
+    }
 
 
 };
 
 LaserScanToPointCloud *lstopc;
 
-// void signal_handler(const ros::TimerEvent&) {
-//   lstopc->exportVoxelGrid();
-//   // std::exit(signal);
-// }
+void signal_handler(int signal) {
+  lstopc->exportVoxelGrid();
+  std::exit(signal);
+}
 
 
 int main(int argc, char** argv){
@@ -93,7 +95,7 @@ int main(int argc, char** argv){
   ros::NodeHandle n;
   ROS_INFO("Starting...");
   lstopc = new LaserScanToPointCloud(n);
-  // std::signal(SIGINT, signal_handler);
+  std::signal(SIGINT, signal_handler);
 
   // ros::Timer timer = n.createTimer(ros::Duration(1.0), signal_handler);
   // ros::AsyncSpinner spinner(1);
