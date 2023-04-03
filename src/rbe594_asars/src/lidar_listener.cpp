@@ -9,6 +9,8 @@
 #include "pcl/filters/voxel_grid.h"
 #include "pcl/io/pcd_io.h"
 #include "pcl_conversions/pcl_conversions.h"
+#include "csignal"
+#include "cstdlib"
 
 class LaserScanToPointCloud {
 
@@ -21,6 +23,7 @@ public:
   tf::MessageFilter<sensor_msgs::LaserScan> laser_notifier_;
   ros::Publisher scan_pub_;
   pcl::PCLPointCloud2 full_cloud;
+  
 
   LaserScanToPointCloud(ros::NodeHandle n): 
     n_(n),
@@ -34,6 +37,7 @@ public:
 
   void scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan_in){
     sensor_msgs::PointCloud2 cloud;
+    ROS_INFO("Starting scan");
     
     try {
         projector_.transformLaserScanToPointCloud("world", *scan_in, cloud, tf_);
@@ -48,35 +52,59 @@ public:
     pcl::concatenate(full_cloud, newPoints, full_cloud);
     pcl_conversions::fromPCL(full_cloud, cloud);
 
-    scan_pub_.publish(cloud);
 
-  }
+    pcl::PCLPointCloud2::Ptr cloud2(new pcl::PCLPointCloud2());
+    pcl::PCLPointCloud2::Ptr cloud_filtered(new pcl::PCLPointCloud2());
 
-  void exportVoxelGrid(){
-    pcl::PCLPointCloud2 *cloud;
-    pcl::PCLPointCloud2ConstPtr cloudPtr(cloud);
-    pcl::PCLPointCloud2 cloud_filtered;
-
-    pcl::concatenate(*cloud, full_cloud, *cloud);
+    pcl_conversions::toPCL(cloud, *cloud2);
 
     pcl::VoxelGrid<pcl::PCLPointCloud2> voxelizer;
-    voxelizer.setInputCloud(cloudPtr);
-    voxelizer.setLeafSize(0.01f, 0.01f, 0.01f);
-    voxelizer.filter(cloud_filtered);
+    voxelizer.setInputCloud(cloud2);
+    voxelizer.setLeafSize(0.5f, 0.5f, 0.5f); // leaf size of 0.5m
+    voxelizer.filter(*cloud_filtered);
 
-    pcl::PCDWriter writer;
-    writer.write("map_grid.pcd", cloud_filtered, Eigen::Vector4f::Zero(), Eigen::Quaternionf::Identity(), false);
+    // pcl::PCDWriter writer;
+    // writer.write("map_grid.pcd", cloud_filtered, Eigen::Vector4f::Zero(), Eigen::Quaternionf::Identity(), false);
+    // ROS_DEBUG("Saved map pcd");
+
+    scan_pub_.publish(cloud_filtered);
+
   }
+
+  // public:
+  //   void exportVoxelGrid(){
+      
+  //   }
 
 
 };
+
+LaserScanToPointCloud *lstopc;
+
+// void signal_handler(const ros::TimerEvent&) {
+//   lstopc->exportVoxelGrid();
+//   // std::exit(signal);
+// }
 
 
 int main(int argc, char** argv){
   
   ros::init(argc, argv, "my_scan_to_cloud");
   ros::NodeHandle n;
-  LaserScanToPointCloud lstopc(n);
+  ROS_INFO("Starting...");
+  lstopc = new LaserScanToPointCloud(n);
+  // std::signal(SIGINT, signal_handler);
+
+  // ros::Timer timer = n.createTimer(ros::Duration(1.0), signal_handler);
+  // ros::AsyncSpinner spinner(1);
+  // spinner.start();
+
+  // while (ros::ok() && std::cin.get() != '\n') {
+  //   ros::Rate(10).sleep();
+  // }
+  // spinner.stop();
+
+
   ros::spin();
   
   return 0;
