@@ -7,7 +7,7 @@ from scipy.interpolate import splprep, splev
 
 DEBUG_PLOT = False
 
-SCAN_WIDTH = 5
+SCAN_WIDTH = 15
 
 victims = []
 
@@ -153,7 +153,7 @@ def trim_traj_to_poly(traj, poly):
     return trim_traj
 
 
-def get_full_coverage_trajectory(locs, z):
+def get_full_coverage_trajectory(locs, z, width=SCAN_WIDTH):
     locs = reorder_vertices_ccw(locs)
 
     poly_bounds = Polygon(locs)
@@ -166,7 +166,7 @@ def get_full_coverage_trajectory(locs, z):
         draw_polygon(inflate_vertices)
         draw_polygon(locs)
 
-    search_traj = generate_expanding_search(inflate_vertices, start_coord=find_centroid(inflate_vertices), step_size=SCAN_WIDTH)
+    search_traj = generate_expanding_search(inflate_vertices, start_coord=find_centroid(inflate_vertices), step_size=width)
     search_traj = trim_traj_to_poly(search_traj, inflate_bounds)
 
     x = np.array([p[0] for p in search_traj])

@@ -13,12 +13,17 @@ def position_callback(msg):
 
 
 def init_move_node():
+    global current_pos
+    current_pos = None
+
     rospy.init_node('fly_to_position')
 
     position_sub = rospy.Subscriber('/ground_truth_to_tf/pose', PoseStamped, position_callback)
     cmd_vel_pub = rospy.Publisher('/cmd_vel', Twist, queue_size=1)
 
-    rospy.sleep(0.1)
+    while current_pos is None:
+        rospy.sleep(0.1)
+        print('Waiting for position callback to begin')
 
     return cmd_vel_pub
 
@@ -57,8 +62,8 @@ def fly_to(cmd_vel_pub, pose):
 
         # Stop moving if the target position is reached
 
-        position_achieved = distance < 5
-        heading_achieved = dzth < 0.15
+        position_achieved = distance < 10
+        heading_achieved = dzth < 0.25
 
         if position_achieved:
             twist_msg.linear.x = 0
@@ -72,9 +77,9 @@ def fly_to(cmd_vel_pub, pose):
             return True
 
         # Calculate the velocity to move towards the target position
-        twist_msg.linear.x = dx * 0.5
-        twist_msg.linear.y = dy * 0.5
-        twist_msg.linear.z = dz * 0.5
+        twist_msg.linear.x = dx * 0.25
+        twist_msg.linear.y = dy * 0.25
+        twist_msg.linear.z = dz * 0.1
 
         # Calculate the angular to move towards the target heading
         twist_msg.angular.z = dzth * 0.5
