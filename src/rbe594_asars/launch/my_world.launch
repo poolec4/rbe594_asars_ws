@@ -15,10 +15,10 @@
                 <arg name="use_sim_time" value="true" />
         </include>
 
-        <param name="robot_description"
-                command="$(find xacro)/xacro --inorder '$(find rbe594_asars)/urdf/lidar_x.xacro'" />
+         <param name="robot_description"
+                 command="$(find xacro)/xacro --inorder '$(find rbe594_asars)/urdf/lidar_x.xacro'" />
 
-        <node name="lidar_spawn" pkg="gazebo_ros" type="spawn_model" output="screen"
-          args="-urdf -param robot_description -model lidar_x" />
+         <node name="lidar_spawn" pkg="gazebo_ros" type="spawn_model" output="screen"
+           args="-urdf -param robot_description -model lidar_x" />
 
 </launch>
