@@ -9,6 +9,7 @@
 #include "pcl/filters/voxel_grid.h"
 #include "pcl/io/pcd_io.h"
 #include "pcl_conversions/pcl_conversions.h"
+#include "pcl/filters/statistical_outlier_removal.h"
 #include "csignal"
 #include "cstdlib"
 
@@ -56,27 +57,32 @@ public:
 
   }
 
-  public:
-    void exportVoxelGrid(){
-      
-      ROS_INFO("Saving map pcd...");
-      sensor_msgs::PointCloud2 cloud;
-      pcl_conversions::fromPCL(full_cloud, cloud);
+  void exportVoxelGrid(){
+    
+    ROS_INFO("Saving map pcd...");
+    sensor_msgs::PointCloud2 cloud;
+    pcl_conversions::fromPCL(full_cloud, cloud);
 
-      pcl::PCLPointCloud2::Ptr cloud2(new pcl::PCLPointCloud2());
-      pcl::PCLPointCloud2::Ptr cloud_filtered(new pcl::PCLPointCloud2());
-      pcl_conversions::toPCL(cloud, *cloud2);
+    pcl::PCLPointCloud2::Ptr cloud2(new pcl::PCLPointCloud2());
+    pcl::PCLPointCloud2::Ptr cloud_filtered(new pcl::PCLPointCloud2());
+    pcl_conversions::toPCL(cloud, *cloud2);
 
-      pcl::VoxelGrid<pcl::PCLPointCloud2> voxelizer;
-      voxelizer.setInputCloud(cloud2);
-      voxelizer.setLeafSize(0.5f, 0.5f, 0.5f); // leaf size of 0.5m
-      voxelizer.filter(*cloud_filtered);
+    pcl::StatisticalOutlierRemoval<pcl::PCLPointCloud2> sor;
+    sor.setInputCloud(cloud2);
+    sor.setMeanK(50);
+    sor.setStddevMulThresh(1.0);
+    sor.filter(*cloud_filtered);
 
-      pcl::PCDWriter writer;
-      writer.write("map_grid.pcd", cloud_filtered, Eigen::Vector4f::Zero(), Eigen::Quaternionf::Identity(), false);
-      
-    }
+    pcl::PCLPointCloud2::Ptr cloud_voxelized(new pcl::PCLPointCloud2());
+    pcl::VoxelGrid<pcl::PCLPointCloud2> voxelizer;
+    voxelizer.setInputCloud(cloud_filtered);
+    voxelizer.setLeafSize(0.5f, 0.5f, 0.5f); // leaf size of 0.5m
+    voxelizer.filter(*cloud_voxelized);
 
+    pcl::PCDWriter writer;
+    writer.write("map_grid.pcd", cloud_voxelized, Eigen::Vector4f::Zero(), Eigen::Quaternionf::Identity(), false);
+    
+  }
 
 };
 
