@@ -10,6 +10,8 @@ project(rbe594_asars)
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
+  nav_msgs
+  geometry_msgs
   std_msgs
   sensor_msgs
   laser_geometry
@@ -210,4 +212,5 @@ include_directories(
 
 add_executable(lidar_listener src/lidar_listener.cpp)
 target_link_libraries(lidar_listener ${catkin_LIBRARIES})
+
 
