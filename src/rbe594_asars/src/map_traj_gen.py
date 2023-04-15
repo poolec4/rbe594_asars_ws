@@ -4,8 +4,9 @@ import random
 import matplotlib.pyplot as plt
 from shapely.geometry import Polygon, LineString, Point, mapping
 from scipy.interpolate import splprep, splev
+import os
 
-DEBUG_PLOT = False
+DEBUG_PLOT = True
 
 SCAN_WIDTH = 15
 
@@ -154,6 +155,7 @@ def trim_traj_to_poly(traj, poly):
 
 
 def get_full_coverage_trajectory(locs, z, width=SCAN_WIDTH):
+    locs.append([0, 0]) # make sure home location is included for good coverage
     locs = reorder_vertices_ccw(locs)
 
     poly_bounds = Polygon(locs)
@@ -163,10 +165,12 @@ def get_full_coverage_trajectory(locs, z, width=SCAN_WIDTH):
     inflate_vertices = [list(x) for x in inflate_vertices[0]]
 
     if DEBUG_PLOT:
+        plt.figure()
         draw_polygon(inflate_vertices)
         draw_polygon(locs)
 
-    search_traj = generate_expanding_search(inflate_vertices, start_coord=find_centroid(inflate_vertices), step_size=width)
+    # search_traj = generate_expanding_search(inflate_vertices, start_coord=find_centroid(inflate_vertices), step_size=width)
+    search_traj = generate_expanding_search(inflate_vertices, start_coord=[0,0], step_size=width)
     search_traj = trim_traj_to_poly(search_traj, inflate_bounds)
 
     x = np.array([p[0] for p in search_traj])
@@ -188,6 +192,13 @@ def get_full_coverage_trajectory(locs, z, width=SCAN_WIDTH):
 
     smooth_search_traj.append(z * np.ones(len(traj_heading)))
     smooth_search_traj.append(np.array(traj_heading))
+
+    if DEBUG_PLOT:
+        plt.plot(smooth_search_traj[0], smooth_search_traj[1], 'k', lw=3)
+        plt.axis('equal')
+        HOME_DIR = os.path.expanduser('~')
+        plt.savefig(os.path.join(HOME_DIR, 'rbe594_asars_ws/src/rbe594_asars/logs/generated_map.png'))  # save to file
+        # plt.show()
 
     return smooth_search_traj
 
@@ -213,7 +224,7 @@ if __name__ == '__main__':
 
     victim_locs = [[v.x, v.y] for v in victims]
 
-    smooth_search_traj = get_full_coverage_trajectory(victim_locs, 5)
+    smooth_search_traj = get_full_coverage_trajectory(victim_locs, 25, width=25)
 
     if DEBUG_PLOT:
         plt.plot(smooth_search_traj[0], smooth_search_traj[1], 'k', lw=3)

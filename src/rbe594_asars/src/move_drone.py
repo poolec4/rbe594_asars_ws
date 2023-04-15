@@ -28,7 +28,7 @@ def init_move_node():
     return cmd_vel_pub
 
 
-def fly_to(cmd_vel_pub, pose):
+def fly_to(cmd_vel_pub, pose, postol=10.0, angtol=0.25):
     x, y, z, th = pose
     rate = rospy.Rate(10)
     twist_msg = Twist()
@@ -62,13 +62,15 @@ def fly_to(cmd_vel_pub, pose):
 
         # Stop moving if the target position is reached
 
-        position_achieved = distance < 10
-        heading_achieved = dzth < 0.25
+        position_achieved = distance < postol
+        heading_achieved = dzth < angtol
 
         if position_achieved:
             twist_msg.linear.x = 0
             twist_msg.linear.y = 0
             twist_msg.linear.z = 0
+            twist_msg.angular.y = 0
+            twist_msg.angular.z = 0
 
         if heading_achieved:
             twist_msg.angular.z = 0
@@ -103,6 +105,14 @@ def fly_to(cmd_vel_pub, pose):
 def follow_trajectory(cmd_pub, traj):
     # input trajectory in form [[x],[y],[z],[th]]
 
+    # first, fly straight up to z
+    z = traj[2][0]
+    th = traj[3][0]
+    start_point = [0, 0, z, th]
+    fly_to(cmd_pub, start_point, postol=1, angtol=0.1)
+    print(f'Taking off to {start_point}')
+
+    # follow trajectory
     for i in range(len(traj[0])):
         x = traj[0][i]
         y = traj[1][i]
@@ -111,6 +121,12 @@ def follow_trajectory(cmd_pub, traj):
         cmd_point = [x, y, z, th]
         print(f'Commanding to {cmd_point}')
         fly_to(cmd_pub, cmd_point)
+
+    # fly back to starting point and land
+    takeoff_point = [0, 0, 0, 0]
+    fly_to(cmd_pub, start_point, postol=1, angtol=0.1)
+    fly_to(cmd_pub, takeoff_point, postol=1, angtol=0.1)
+    print('Landing')
 
 
 if __name__ == '__main__':

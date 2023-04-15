@@ -10,13 +10,17 @@
 
 import pcl
 import rospy
+import rospkg
+
 import numpy as np
 from nav_msgs.msg import OccupancyGrid
 from geometry_msgs.msg import Pose, Quaternion
 import math
 
+rospack = rospkg.RosPack()
+pkg_path = rospack.get_path('rbe594_asars')
 
-DEFAULT_PCD_FILE = "/home/tcgungor/rbe594_asars_ws/map_grid.pcd"
+DEFAULT_PCD_FILE = pkg_path + '/map_grid.pcd'
 DEFAULT_RESOLUTION = 0.5
 DEFAULT_ANGLE_THRESHOLD = 30
 

@@ -38,7 +38,7 @@ public:
 
   void scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan_in){
     sensor_msgs::PointCloud2 cloud;
-    ROS_INFO("Scanning");
+//    ROS_INFO("Scanning");
     
     try {
         projector_.transformLaserScanToPointCloud("world", *scan_in, cloud, tf_);
