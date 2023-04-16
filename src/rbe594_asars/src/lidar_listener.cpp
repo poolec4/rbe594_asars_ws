@@ -12,6 +12,8 @@
 #include "pcl/filters/statistical_outlier_removal.h"
 #include "csignal"
 #include "cstdlib"
+#include "std_msgs/String.h"
+
 
 class LaserScanToPointCloud {
 
@@ -94,6 +96,12 @@ void signal_handler(int signal) {
   std::exit(signal);
 }
 
+void kill_handler(const std_msgs::String::ConstPtr& msg) {
+  ROS_INFO("Received message: [%s]", msg->data.c_str());
+  if (strcmp(msg->data.c_str(), "kill") == 0) {
+    lstopc->exportVoxelGrid();
+  }
+}
 
 int main(int argc, char** argv){
   
@@ -101,6 +109,8 @@ int main(int argc, char** argv){
   ros::NodeHandle n;
   ROS_INFO("Starting...");
   lstopc = new LaserScanToPointCloud(n);
+
+  ros::Subscriber sub = n.subscribe("mapping_status", 100, kill_handler);
   std::signal(SIGINT, signal_handler);
 
   ros::spin();

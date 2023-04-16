@@ -2,6 +2,8 @@
 
 import rospy
 from geometry_msgs.msg import Twist, PoseStamped
+from std_msgs.msg import String
+
 from scipy.spatial.transform import Rotation as R
 import math as m
 
@@ -105,6 +107,8 @@ def fly_to(cmd_vel_pub, pose, postol=10.0, angtol=0.25):
 def follow_trajectory(cmd_pub, traj):
     # input trajectory in form [[x],[y],[z],[th]]
 
+    pub = rospy.Publisher('mapping_status', String, queue_size=10)
+
     # first, fly straight up to z
     z = traj[2][0]
     th = traj[3][0]
@@ -112,21 +116,27 @@ def follow_trajectory(cmd_pub, traj):
     fly_to(cmd_pub, start_point, postol=1, angtol=0.1)
     print(f'Taking off to {start_point}')
 
-    # follow trajectory
-    for i in range(len(traj[0])):
-        x = traj[0][i]
-        y = traj[1][i]
-        z = traj[2][i]
-        th = traj[3][i]
-        cmd_point = [x, y, z, th]
-        print(f'Commanding to {cmd_point}')
-        fly_to(cmd_pub, cmd_point)
+    if not rospy.is_shutdown():
+        pub.publish('mapping')
 
+    # follow trajectory
+    # for i in range(len(traj[0])):
+    #     x = traj[0][i]
+    #     y = traj[1][i]
+    #     z = traj[2][i]
+    #     th = traj[3][i]
+    #     cmd_point = [x, y, z, th]
+    #     print(f'Commanding to {cmd_point}')
+    #     fly_to(cmd_pub, cmd_point)
+    #
     # fly back to starting point and land
     takeoff_point = [0, 0, 0, 0]
     fly_to(cmd_pub, start_point, postol=1, angtol=0.1)
     fly_to(cmd_pub, takeoff_point, postol=1, angtol=0.1)
     print('Landing')
+
+    if not rospy.is_shutdown():
+        pub.publish('kill')
 
 
 if __name__ == '__main__':

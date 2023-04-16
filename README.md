@@ -32,3 +32,10 @@ This will run Hector in a test world and start the teleop menu. It will also ope
 ```bash
 roslaunch rbe594_asars hector_world.launch
 ```
+
+## Full Simulation
+
+This will run the full ASARS simulation. It will begin by generating the world and spawning the victims. Then, it will begin the UAV mapping and scanning operations. Once this is complete, the occupancy grid is generated and the AGV planning commences.
+```bash
+roslaunch rbe594_asars main_asars_world.launch
+```

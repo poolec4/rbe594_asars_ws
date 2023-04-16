@@ -10,9 +10,10 @@ import pcl
 import numpy as np
 from nav_msgs.msg import OccupancyGrid
 from geometry_msgs.msg import Pose, Point, Quaternion
+import os
 
-
-DEFAULT_PCD_FILE = "/home/tcgungor/rbe594_asars_ws/map_grid.pcd"
+HOME_DIR = os.path.expanduser('~')
+DEFAULT_PCD_FILE = os.path.join(HOME_DIR, '.ros/map_grid.pcd')
 DEFAULT_RESOLUTION = 0.5
 DEFAULT_HEIGHT_THRESHOLD = 0.5
 
