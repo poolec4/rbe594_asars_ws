@@ -9,13 +9,21 @@ from nav_msgs.msg import Odometry
 from move_base_msgs.msg import MoveBaseActionGoal
 from nav_msgs.msg import Path
 from std_msgs.msg import Bool
+from std_msgs.msg import Header
 from geometry_msgs.msg import Twist
+from geometry_msgs.msg import Pose
+from geometry_msgs.msg import PoseStamped
+from geometry_msgs.msg import Quaternion
+from geometry_msgs.msg import Point
+import actionlib
+from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
 from rbe594_asars.srv import VictimsLoc, VictimsLocResponse
-lp_planner = "DWA"
+lp_planner = "TEB"
 
 global_path = {'x': [], 'y': []}
 actual_path = {'x': [], 'y': []}
 cmd_vel = []
+test_globalPath = Path
 
 # Measure time
 start = 0
@@ -34,7 +42,8 @@ def save_data():
     new_data =  {'global_path': global_path,
                  'actual_path': actual_path,
                  'cmd_vel':     cmd_vel,
-                 'time_taken':  end-start}
+                 'time_taken':  end-start,
+                 'test_globalPath': test_globalPath}
     
     data = {}
     filePath = 'metrics.pickle'
@@ -87,6 +96,9 @@ def goal_reached_cb(goal_data):
     itr = 1
 
 def global_plan_cb(globaPlan_data):
+    global test_globalPath
+    test_globalPath = globaPlan_data
+    
     for waypoint in globaPlan_data.poses:
         # print("(x,y) (%.2f, %.2f)" % (waypoint.pose.position.x, waypoint.pose.position.y))
         global_path['x'].append(waypoint.pose.position.x)
@@ -121,7 +133,7 @@ def setup_ros_comm():
     rospy.Subscriber("/husky_velocity_controller/cmd_vel", Twist, cmd_vel_cb)
 
     # spin() simply keeps python from exiting until this node is stopped
-    rospy.spin()
+    # rospy.spin()
 
 def test_victims_loc():
     rospy.wait_for_service('VictimsLoc')
@@ -134,10 +146,32 @@ def test_victims_loc():
         print("Service call failed: %s"%e)
 
 
+def test_lp():
+    # rospy.init_node('test_lp')    # cuz setup_comm() is already creating a node
+    client = actionlib.SimpleActionClient('move_base', MoveBaseAction)
+    client.wait_for_server()
+
+    goal = MoveBaseGoal()
+    goal.target_pose.header.frame_id = "odom"
+    goal.target_pose.header.stamp = rospy.Time.now()
+    goal.target_pose.pose.position.x = 40.0
+    goal.target_pose.pose.orientation.w = 1.0
+
+    client.send_goal(goal)
+    wait = client.wait_for_result()
+    if not wait:
+        rospy.logerr("Action server not available!")
+        rospy.signal_shutdown("Action server not available!")
+    else:
+        rospy.loginfo("Command executed!")
+    
+
+
 if __name__ == "__main__":
     setup_ros_comm()
     # plot_all()
     # test_victims_loc()
-
+    test_lp()
+    rospy.spin()
 
 

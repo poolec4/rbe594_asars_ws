@@ -7,19 +7,19 @@ import rospkg
 
 
 def spawn_victims(victims):
-    print("Waiting for gazebo services...")
-    rospy.wait_for_service("gazebo/spawn_sdf_model")
+    # print("Waiting for gazebo services...")
+    # rospy.wait_for_service("gazebo/spawn_sdf_model")
 
-    spawn_model = rospy.ServiceProxy("gazebo/spawn_sdf_model", SpawnModel)
+    # spawn_model = rospy.ServiceProxy("gazebo/spawn_sdf_model", SpawnModel)
 
-    rospack = rospkg.RosPack()
-    pkg_path = rospack.get_path('rbe594_asars')
-    MODEL_PATH = pkg_path + '/models/human_male_1/model.sdf'
+    # rospack = rospkg.RosPack()
+    # pkg_path = rospack.get_path('rbe594_asars')
+    # MODEL_PATH = pkg_path + '/models/human_male_1/model.sdf'
 
-    print(f'opening: {MODEL_PATH}')
+    # print(f'opening: {MODEL_PATH}')
 
-    with open(MODEL_PATH, "r") as f:
-        model_xml = f.read()
+    # with open(MODEL_PATH, "r") as f:
+    #     model_xml = f.read()
 
     victims_loc = PoseArray()
     for victim in victims:
@@ -30,7 +30,7 @@ def spawn_victims(victims):
         victim_pose = Pose(Point(x=victim.x, y=victim.y, z=0), orient)
         victims_loc.poses.append(victim_pose)
 
-        spawn_model(item_name, model_xml, '', victim_pose, "world")
+        # spawn_model(item_name, model_xml, '', victim_pose, "world")
         print(f'spawned {item_name}')
 
     return victims_loc

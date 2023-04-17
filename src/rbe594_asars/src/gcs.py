@@ -39,15 +39,15 @@ victims_loc_poseArray = spawn_victims(victims)
 
 # get smooth UAV traj
 victim_locs = [[v.x, v.y] for v in victims]
-smooth_search_traj = get_full_coverage_trajectory(victim_locs, SCAN_Z, SCAN_WIDTH)
+# smooth_search_traj = get_full_coverage_trajectory(victim_locs, SCAN_Z, SCAN_WIDTH)
 
-# send traj to move node
-rospy.wait_for_service("gazebo/get_link_state")
-cmd_vel_pub = init_move_node()
-follow_trajectory(cmd_vel_pub, smooth_search_traj)
+# # send traj to move node
+# rospy.wait_for_service("gazebo/get_link_state")
+# cmd_vel_pub = init_move_node()
+# follow_trajectory(cmd_vel_pub, smooth_search_traj)
 
-# get occupancy grid
-generate_occ_grid()
+# # get occupancy grid
+# generate_occ_grid()
 
 # service that provides info about victims loc
 def handle_VictimsLoc(req):
