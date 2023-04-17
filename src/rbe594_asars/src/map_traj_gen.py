@@ -6,7 +6,7 @@ from shapely.geometry import Polygon, LineString, Point, mapping
 from scipy.interpolate import splprep, splev
 import os
 
-DEBUG_PLOT = True
+DEBUG_PLOT = False
 
 SCAN_WIDTH = 15
 

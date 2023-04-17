@@ -11,6 +11,7 @@ from map_traj_gen import get_full_coverage_trajectory, Victim
 from move_drone import init_move_node, follow_trajectory
 from model_helpers import spawn_victims
 from pcd_to_occupancy_grid import main as generate_occ_grid
+from rbe594_asars.srv import VictimsLoc, VictimsLocResponse
 
 NUM_VICTIMS = 5
 SCAN_Z = 25
@@ -34,7 +35,7 @@ for i in range(NUM_VICTIMS):
     victims.append(new_victim)
     print(f'generated victim {new_victim}')
 
-spawn_victims(victims)
+victims_loc_poseArray = spawn_victims(victims)
 
 # get smooth UAV traj
 victim_locs = [[v.x, v.y] for v in victims]
@@ -48,6 +49,17 @@ follow_trajectory(cmd_vel_pub, smooth_search_traj)
 # get occupancy grid
 generate_occ_grid()
 
+# service that provides info about victims loc
+def handle_VictimsLoc(req):
+    return VictimsLocResponse(victims_loc_poseArray)
+
+rospy.init_node('gcs')
+victims_loc = rospy.Service('VictimsLoc', VictimsLoc, handle_VictimsLoc)
+print("VictimsLoc server up and running")
+
 # perform global path plan
 
 # perform local path plan
+
+
+rospy.spin()

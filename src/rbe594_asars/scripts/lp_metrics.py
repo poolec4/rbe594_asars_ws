@@ -10,6 +10,7 @@ from move_base_msgs.msg import MoveBaseActionGoal
 from nav_msgs.msg import Path
 from std_msgs.msg import Bool
 from geometry_msgs.msg import Twist
+from rbe594_asars.srv import VictimsLoc, VictimsLocResponse
 lp_planner = "DWA"
 
 global_path = {'x': [], 'y': []}
@@ -122,8 +123,21 @@ def setup_ros_comm():
     # spin() simply keeps python from exiting until this node is stopped
     rospy.spin()
 
+def test_victims_loc():
+    rospy.wait_for_service('VictimsLoc')
+    try:
+        srv_VictimsLoc = rospy.ServiceProxy('VictimsLoc', VictimsLoc)
+        resp1 = srv_VictimsLoc()
+        for id, loc in enumerate(resp1.victims_pose.poses):
+            print(id, ": \n", loc)
+    except rospy.ServiceException as e:
+        print("Service call failed: %s"%e)
+
 
 if __name__ == "__main__":
     setup_ros_comm()
     # plot_all()
+    # test_victims_loc()
+
+
 

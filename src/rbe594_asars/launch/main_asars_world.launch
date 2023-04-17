@@ -11,8 +11,12 @@
     <arg name="model" value="$(find rbe594_asars)/urdf/quadrotor_hokuyo_utm30lx_rotated.gazebo.xacro"/>
   </include>
 
+  <!-- Spawn simulated husky agv -->
+  <!-- <include file="$(find husky_gazebo)/launch/spawn_husky.launch">
+  </include> -->
+
   <!-- Start rviz visualization with preset config -->
-  <node pkg="rviz" type="rviz" name="rviz" args="-d $(find hector_quadrotor_demo)/rviz_cfg/outdoor_flight.rviz"/>
+  <!-- <node pkg="rviz" type="rviz" name="rviz" args="-d $(find hector_quadrotor_demo)/rviz_cfg/outdoor_flight.rviz"/> -->
 
   <!-- Start Hector teleop for testing -->
 <!--  <node pkg="hector_ui" name="ui_hector_quad" type="ui_hector_quad.py" output="screen"> </node>-->
