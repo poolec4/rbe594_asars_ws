@@ -4,3 +4,12 @@
 [submodule "hector-quadrotor-noetic"]
 	path = src/hector-quadrotor-noetic
 	url = https://github.com/RAFALAMAO/hector-quadrotor-noetic.git
+[submodule "src/rbe594Capstone-husky"]
+	path = src/rbe594Capstone-husky
+	url = https://github.com/emmanuel-logy/rbe594Capstone-husky.git
+[submodule "src/teb_local_planner"]
+	path = src/teb_local_planner
+	url = https://github.com/rst-tu-dortmund/teb_local_planner.git
+[submodule "src/rbe594Capstone-navigation"]
+	path = src/rbe594Capstone-navigation
+	url = https://github.com/emmanuel-logy/rbe594Capstone-navigation.git
