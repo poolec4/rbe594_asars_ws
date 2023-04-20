@@ -120,15 +120,15 @@ def follow_trajectory(cmd_pub, traj):
         pub.publish('mapping')
 
     # follow trajectory
-    # for i in range(len(traj[0])):
-    #     x = traj[0][i]
-    #     y = traj[1][i]
-    #     z = traj[2][i]
-    #     th = traj[3][i]
-    #     cmd_point = [x, y, z, th]
-    #     print(f'Commanding to {cmd_point}')
-    #     fly_to(cmd_pub, cmd_point)
-    #
+    for i in range(len(traj[0])):
+        x = traj[0][i]
+        y = traj[1][i]
+        z = traj[2][i]
+        th = traj[3][i]
+        cmd_point = [x, y, z, th]
+        print(f'Commanding to {cmd_point}')
+        fly_to(cmd_pub, cmd_point)
+
     # fly back to starting point and land
     takeoff_point = [0, 0, 0, 0]
     fly_to(cmd_pub, start_point, postol=1, angtol=0.1)

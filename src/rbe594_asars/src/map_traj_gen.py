@@ -4,6 +4,7 @@ import random
 import matplotlib.pyplot as plt
 from shapely.geometry import Polygon, LineString, Point, mapping
 from scipy.interpolate import splprep, splev
+from victim_helpers import Victim
 import os
 
 DEBUG_PLOT = False
@@ -11,30 +12,6 @@ DEBUG_PLOT = False
 SCAN_WIDTH = 15
 
 victims = []
-
-
-class Victim:
-    def __init__(self, id, location, severity=None):
-        self.id = id
-        self.x = location[0]
-        self.y = location[1]
-
-        if len(location) == 3:
-            self.z = location[2]
-        else:
-            self.z = None
-
-        self.severity = severity
-
-    def __str__(self):
-        print_str = f'Location: [{self.x:.2f}, {self.y:.2f}'
-
-        if self.z is not None:
-            print_str += f', {self.z:.2f}]'
-        else:
-            print_str += ']'
-
-        return print_str
 
 
 def find_centroid(v):
