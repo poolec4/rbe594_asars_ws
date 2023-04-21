@@ -28,10 +28,18 @@ roslaunch rbe594_asars my_world.launch
 
 ## Hector Test
 
-This will run Hector in a test world and start the teleop menu. It will also open the sensor visualization in RViz. This has the downward facing LIDAR for ground mapping:
+This will run Hector UAV in a test world and start the teleop menu. It will also open the sensor visualization in RViz. This has the downward facing LIDAR for ground mapping:
 ```bash
 roslaunch rbe594_asars hector_world.launch
 ```
+
+## Husky Test
+
+This will run Husky AGV in a test world and start the teleop menu. It will also open the sensor visualization in RViz. This has the front facing HUSKY_UST10 2D-LIDAR for local planner:
+```bash
+roslaunch rbe594_asars husky_world.launch
+```
+
 
 ## Full Simulation
 

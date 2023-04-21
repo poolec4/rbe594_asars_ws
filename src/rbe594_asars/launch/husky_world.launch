@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<launch>
+
+   <!-- Start Gazebo with custom world -->
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="world_name" value="$(find rbe594_asars)/worlds/small_city.world"/>
+  </include>
+
+  <!-- Spawn simulated husky agv -->
+  <include file="$(find rbe594_asars)/launch/spawn_husky.launch" />
+
+  <!-- Start rviz visualization with preset config -->
+  <node pkg="rviz" type="rviz" name="rviz" args="-d $(find husky_viz)/rviz/robot.rviz" output="screen"/>
+
+</launch>

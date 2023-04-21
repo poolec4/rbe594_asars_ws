@@ -13,3 +13,12 @@
 [submodule "src/rbe594Capstone-navigation"]
 	path = src/rbe594Capstone-navigation
 	url = https://github.com/emmanuel-logy/rbe594Capstone-navigation.git
+[submodule "src/husky"]
+	path = src/husky
+	url = https://github.com/husky/husky.git
+[submodule "navigation"]
+	path = navigation
+	url = https://github.com/ros-planning/navigation.git
+[submodule "src/navigation"]
+	path = src/navigation
+	url = https://github.com/ros-planning/navigation.git

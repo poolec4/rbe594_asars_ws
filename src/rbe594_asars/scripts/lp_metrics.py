@@ -7,6 +7,7 @@ import os.path
 from timeit import default_timer as timer
 from nav_msgs.msg import Odometry
 from move_base_msgs.msg import MoveBaseActionGoal
+from move_base_msgs.msg import MoveBaseActionResult
 from nav_msgs.msg import Path
 from std_msgs.msg import Bool
 from std_msgs.msg import Header
@@ -84,16 +85,20 @@ def plot_all():
 
 
 def goal_reached_cb(goal_data):
-    global end
-    end = timer()
-    save_data()
-    plot_all()
-    actual_path['x'].clear()
-    actual_path['y'].clear()
-    global_path['x'].clear()
-    global_path['y'].clear()
-    cmd_vel.clear()
-    itr = 1
+    # For more info, run $ rostopic info /move_base/result --> $ rosmsg show move_base_msgs/MoveBaseActionResult
+    # status == 3 --> SUCCEEDED
+    # status == 9 --> LOST
+    if goal_data.status.status == 3 or goal_data.status.status == 9:
+        global end
+        end = timer()
+        save_data()
+        plot_all()
+        actual_path['x'].clear()
+        actual_path['y'].clear()
+        global_path['x'].clear()
+        global_path['y'].clear()
+        cmd_vel.clear()
+        itr = 1
 
 def global_plan_cb(globaPlan_data):
     global test_globalPath
@@ -123,7 +128,8 @@ def setup_ros_comm():
     rospy.init_node('lp_metrics', anonymous=True)
 
     # rospy.Subscriber("/husky_velocity_controller/odom", Odometry, odom_cb)
-    rospy.Subscriber("/goal_reached", Bool, goal_reached_cb)
+    # rospy.Subscriber("/goal_reached", Bool, goal_reached_cb)
+    rospy.Subscriber("/move_base/result", MoveBaseActionResult, goal_reached_cb)
     if lp_planner == 'DWA':
         rospy.Subscriber("/move_base/DWAPlannerROS/local_plan", Path, local_plan_cb)
     else:
@@ -154,7 +160,7 @@ def test_lp():
     goal = MoveBaseGoal()
     goal.target_pose.header.frame_id = "odom"
     goal.target_pose.header.stamp = rospy.Time.now()
-    goal.target_pose.pose.position.x = 40.0
+    goal.target_pose.pose.position.x = 30.0
     goal.target_pose.pose.orientation.w = 1.0
 
     client.send_goal(goal)
