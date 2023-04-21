@@ -44,22 +44,26 @@ def generate_victim_locations(map, num_victims, seed=None):
         random.seed(seed)
 
     if map == 'small_city':
-        # MAP_BOUNDS = [[-80, 123], [-48, 48]]
         perimeter_offset = 5
-        min_x = -50 + perimeter_offset
-        max_x = 123 - perimeter_offset
+        # min_x = -50 + perimeter_offset
+        # max_x = 123 - perimeter_offset
+        # min_y = -48 + perimeter_offset
+        # max_y = 48 - perimeter_offset
+
+        min_x = -20 + perimeter_offset
+        max_x = 50 - perimeter_offset
         min_y = -48 + perimeter_offset
         max_y = 48 - perimeter_offset
 
         victim_options = []
-        victim_options.extend(generate_equidistant_points([min_x, min_y], [min_x, max_y], 5))
-        victim_options.extend(generate_equidistant_points([min_x, min_y], [max_x, min_y], 5))
-        victim_options.extend(generate_equidistant_points([max_x, min_y], [max_x, max_y], 5))
-        victim_options.extend(generate_equidistant_points([min_x, max_y], [max_x, max_y], 5))
+        victim_options.extend(generate_equidistant_points([min_x, min_y], [min_x, max_y], 5)) # left
+        victim_options.extend(generate_equidistant_points([min_x, min_y], [max_x, min_y], 5)) # bottom
+        victim_options.extend(generate_equidistant_points([max_x, min_y], [max_x, max_y], 5)) # right
+        victim_options.extend(generate_equidistant_points([min_x, max_y], [max_x, max_y], 5)) # top
+        victim_options.extend(generate_equidistant_points([min_x, 0], [max_x, 0], 5)) # center horiz
     else:
         victim_options = [[0, 0]]
 
-    print(victim_options)
     rand_inds = random.sample(range(len(victim_options)), num_victims)
 
     for ind in rand_inds:

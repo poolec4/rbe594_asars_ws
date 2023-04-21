@@ -12,22 +12,21 @@ from victim_helpers import generate_victim_locations, spawn_victims
 from pcd_to_occupancy_grid import main as generate_occ_grid
 from rbe594_asars.srv import VictimsLoc, VictimsLocResponse
 
+rospy.init_node('gcs')
+
 MAP = 'small_city'
-NUM_VICTIMS = 5
+NUM_VICTIMS = 2
 
 SCAN_Z = 25
 SCAN_ANGLE = math.radians(90)
 SCAN_OVERLAP = 0.5
 
+# calculate scan parameters
 SCAN_WIDTH = 2*math.cos(SCAN_ANGLE/2)*SCAN_Z*(1-SCAN_OVERLAP)
 print(f'Computed SCAN_WIDTH = {SCAN_WIDTH}')
 
-# get map bounds
-# MAP_BOUNDS = [[-80, 123], [-48, 48]] # temporary hard coded map bounds
-# MAP_BOUNDS = [[-50, 100], [-35, 35]] # Smaller map
-
 # randomly spawn victims
-victims = generate_victim_locations(MAP, NUM_VICTIMS, 50)
+victims = generate_victim_locations(MAP, NUM_VICTIMS, 10)
 victims_loc_poseArray = spawn_victims(victims)
 
 # get smooth UAV traj
@@ -40,13 +39,12 @@ cmd_vel_pub = init_move_node()
 follow_trajectory(cmd_vel_pub, smooth_search_traj)
 
 # # get occupancy grid
-# generate_occ_grid()
+generate_occ_grid()
 
 # service that provides info about victims loc
 def handle_VictimsLoc(req):
     return VictimsLocResponse(victims_loc_poseArray)
 
-rospy.init_node('gcs')
 victims_loc = rospy.Service('VictimsLoc', VictimsLoc, handle_VictimsLoc)
 print("VictimsLoc server up and running")
 
