@@ -18,8 +18,6 @@ def init_move_node():
     global current_pos
     current_pos = None
 
-    rospy.init_node('fly_to_position')
-
     position_sub = rospy.Subscriber('/ground_truth_to_tf/pose', PoseStamped, position_callback)
     cmd_vel_pub = rospy.Publisher('/cmd_vel', Twist, queue_size=1)
 

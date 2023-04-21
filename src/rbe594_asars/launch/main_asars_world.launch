@@ -23,7 +23,7 @@
   <!-- <node pkg="rbe594_asars" name="asars_gcs" type="gcs.py" output="screen"> </node> -->
 
   <!-- Start LIDAR listener node -->
-  <!-- <node pkg="rbe594_asars" name="lidar_listener" type="lidar_listener" output="screen"> </node> -->
+   <node pkg="rbe594_asars" name="lidar_listener" type="lidar_listener" output="screen"> </node>
 
 
 
