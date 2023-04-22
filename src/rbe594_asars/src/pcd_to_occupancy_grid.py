@@ -10,6 +10,7 @@ import pcl
 import numpy as np
 from nav_msgs.msg import OccupancyGrid
 from geometry_msgs.msg import Pose, Point, Quaternion
+from victim_helpers import start_victims_loc_service
 import os
 
 HOME_DIR = os.path.expanduser('~')
@@ -111,4 +112,9 @@ def main():
 
 if __name__ == "__main__":
     rospy.init_node("pcd_to_occupancy_grid")
+
+    # loading victims location for planner
+    victims_loc_srv = start_victims_loc_service()
+    
+    # start occupancy grid
     main()

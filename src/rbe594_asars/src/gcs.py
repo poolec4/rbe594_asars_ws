@@ -15,7 +15,7 @@ from rbe594_asars.srv import VictimsLoc, VictimsLocResponse
 rospy.init_node('gcs')
 
 MAP = 'small_city'
-NUM_VICTIMS = 2
+NUM_VICTIMS = 5
 
 SCAN_Z = 25
 SCAN_ANGLE = math.radians(90)
