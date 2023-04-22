@@ -11,12 +11,13 @@
 
   <!-- Run AMCL -->
   <include file="$(find husky_navigation)/launch/amcl.launch">
-    <arg name="use_map_topic" value="false"/>
+    <arg name="use_map_topic" value="true"/>
   </include>
 
   <!-- Run Move Base -->
-  <include file="$(find rbe594_asars)/launch/move_base.launch">
-    <arg name="no_static_map" value="true"/>
+  <include file="$(find husky_navigation)/launch/move_base.launch">
+    <arg name="no_static_map" value="false"/>
+    
   </include>
 
   <!-- Start rviz visualization with preset config -->

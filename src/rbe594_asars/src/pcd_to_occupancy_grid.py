@@ -11,11 +11,14 @@ import numpy as np
 from nav_msgs.msg import OccupancyGrid
 from geometry_msgs.msg import Pose, Point, Quaternion
 import os
-
+from std_srvs.srv import Empty
+from victim_helpers import load_victims_loc, spawn_victims, Victim
+from asars_global_planner.srv import GenerateVisitingOrder
 HOME_DIR = os.path.expanduser('~')
-DEFAULT_PCD_FILE = os.path.join(HOME_DIR, '.ros/map_grid.pcd')
-DEFAULT_RESOLUTION = 0.5
-DEFAULT_HEIGHT_THRESHOLD = 0.5
+#DEFAULT_PCD_FILE = os.path.join(HOME_DIR, '.ros/map_grid.pcd')
+DEFAULT_PCD_FILE = os.path.join(HOME_DIR, 'Downloads/map_grid_5.pcd')
+DEFAULT_RESOLUTION = 0.9
+DEFAULT_HEIGHT_THRESHOLD = 0.1
 
 
 def load_pcd_file(filename):
@@ -91,6 +94,31 @@ def numpy_to_occupancy_grid_msg(occupancy_grid_np, resolution, origin):
     
     return occupancy_grid_msg
 
+def start_planner_cb(req):
+    print("Planner request started")
+    print("waiting for victim generation service")
+    rospy.wait_for_service('asars/start_victim_visting')
+    victim_locations = load_victims_loc()
+    try:
+        generate_visiting_order_srv = rospy.ServiceProxy('asars/start_victim_visting', GenerateVisitingOrder)
+        point_msg_array = [poses.position for poses in victim_locations.poses]
+        victims = []
+        for pose in victim_locations.poses:
+            
+            victims.append(Victim(len(victims), [pose.position.x, pose.position.y]))
+
+        spawn_victims(victims)
+        resp1 = generate_visiting_order_srv(point_msg_array)
+        return resp1.sum
+    except rospy.ServiceException as e:
+        print("Service call failed: %s"%e)
+
+# This service is to be called to start the global planning nodes
+def start_planner_srv():
+    planner_srv = rospy.Service('/asars/start_planning', Empty, start_planner_cb)
+    return planner_srv
+
+
 def main():
     pcd_filename = rospy.get_param("~pcd_file", DEFAULT_PCD_FILE)
     resolution = rospy.get_param("~resolution", DEFAULT_RESOLUTION)
@@ -99,8 +127,8 @@ def main():
     point_cloud = load_pcd_file(pcd_filename)
 
     occupancy_grid_np, origin = point_cloud_to_occupancy_grid(point_cloud, resolution, height_threshold)
-
-    occupancy_grid_pub = rospy.Publisher("/occupancy_grid", OccupancyGrid, queue_size=1)
+        
+    occupancy_grid_pub = rospy.Publisher("/map", OccupancyGrid, queue_size=1)
 
     rate = rospy.Rate(0.5)  # Publish at 0.5 Hz
     while not rospy.is_shutdown():
@@ -111,4 +139,5 @@ def main():
 
 if __name__ == "__main__":
     rospy.init_node("pcd_to_occupancy_grid")
+    start_planner_srv = start_planner_srv()
     main()

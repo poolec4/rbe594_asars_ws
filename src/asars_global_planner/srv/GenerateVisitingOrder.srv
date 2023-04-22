@@ -1,0 +1,3 @@
+geometry_msgs/Point[] victim_locations
+---
+geometry_msgs/Point[] victim_visiting_order
