@@ -38,6 +38,3 @@ PATTERN ".svn" EXCLUDE
 ## Build service
 add_executable(visiting_order_generator_node src/visiting_order_generator_node.cpp)
 target_link_libraries(visiting_order_generator_node ${catkin_LIBRARIES})
-
-add_executable(global_planner_demo src/global_planner_demo.cpp)
-target_link_libraries(global_planner_demo ${catkin_LIBRARIES})
