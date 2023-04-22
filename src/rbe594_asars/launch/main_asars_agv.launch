@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<launch>
+
+  <!-- Start Gazebo with custom world -->
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="world_name" value="$(find rbe594_asars)/worlds/small_city.world"/>
+  </include>
+
+  <!-- Spawn simulated husky agv -->
+  <include file="$(find rbe594_asars)/launch/spawn_husky.launch" />
+
+  <!-- Run AMCL -->
+  <include file="$(find husky_navigation)/launch/amcl.launch">
+    <arg name="use_map_topic" value="false"/>
+  </include>
+
+  <!-- Run Move Base -->
+  <include file="$(find rbe594_asars)/launch/move_base.launch">
+    <arg name="no_static_map" value="true"/>
+  </include>
+
+  <!-- Start rviz visualization with preset config -->
+  <node pkg="rviz" type="rviz" name="rviz" args="-d $(find husky_viz)/rviz/robot.rviz" output="screen"/>
+
+  <!-- Start occupancy grid generator node -->
+  <node pkg="rbe594_asars" name="occupancy_grid_generator" type="pcd_to_occupancy_grid.py" output="screen" />
+
+  <!-- Start agv planning and control node -->
+  <!-- <node pkg="rbe594_asars" name="asars_agv_planner" type="?.py" output="screen"> </node> -->
+
+</launch>

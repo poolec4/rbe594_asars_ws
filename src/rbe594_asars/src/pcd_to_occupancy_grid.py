@@ -92,8 +92,6 @@ def numpy_to_occupancy_grid_msg(occupancy_grid_np, resolution, origin):
     return occupancy_grid_msg
 
 def main():
-    rospy.init_node("pcd_to_occupancy_grid")
-
     pcd_filename = rospy.get_param("~pcd_file", DEFAULT_PCD_FILE)
     resolution = rospy.get_param("~resolution", DEFAULT_RESOLUTION)
     height_threshold = rospy.get_param("~height_threshold", DEFAULT_HEIGHT_THRESHOLD)
@@ -112,4 +110,5 @@ def main():
         rate.sleep()
 
 if __name__ == "__main__":
+    rospy.init_node("pcd_to_occupancy_grid")
     main()

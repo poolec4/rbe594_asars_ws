@@ -7,6 +7,11 @@ from geometry_msgs.msg import *
 import rospkg
 import random
 import numpy as np
+import pickle
+import os
+
+HOME_DIR = os.path.expanduser('~')
+DEFAULT_VICTIMS_LOC_FILE = os.path.join(HOME_DIR, '.ros/victims_loc.pickle')
 
 class Victim:
     def __init__(self, id, location, severity=None):
@@ -102,3 +107,26 @@ def spawn_victims(victims):
         print(f'spawned {item_name}')
 
     return victims_loc
+
+
+def save_victims_loc(victims_loc_poseArray):
+    new_data =  {'random_victims_loc': victims_loc_poseArray}
+
+    with open(DEFAULT_VICTIMS_LOC_FILE, 'wb') as fd:
+        pickle.dump(new_data, fd, protocol=pickle.HIGHEST_PROTOCOL)
+
+    print('Victims Location saved successfully')
+
+
+# Returns geometry_msgs.msg.PoseArray
+def load_victims_loc():
+    data = {}
+    if os.path.exists(DEFAULT_VICTIMS_LOC_FILE):
+        with open(DEFAULT_VICTIMS_LOC_FILE, 'rb') as fd:
+            data = pickle.load(fd)
+    else:
+        print('victimsLoc_filePath file not found')
+
+    return data['random_victims_loc']
+
+
