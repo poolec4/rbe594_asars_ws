@@ -15,8 +15,8 @@ from std_srvs.srv import Empty
 from victim_helpers import load_victims_loc, spawn_victims, Victim
 from asars_global_planner.srv import GenerateVisitingOrder
 HOME_DIR = os.path.expanduser('~')
-DEFAULT_PCD_FILE = os.path.join(HOME_DIR, '.ros/map_grid.pcd')
-#DEFAULT_PCD_FILE = os.path.join(HOME_DIR, 'Downloads/map_grid_3.pcd')
+#DEFAULT_PCD_FILE = os.path.join(HOME_DIR, '.ros/map_grid.pcd')
+DEFAULT_PCD_FILE = os.path.join(HOME_DIR, 'Downloads/map_grid_3.pcd')
 DEFAULT_RESOLUTION = 0.5
 DEFAULT_HEIGHT_THRESHOLD = 0.5
 

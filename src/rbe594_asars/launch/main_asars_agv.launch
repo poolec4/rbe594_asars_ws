@@ -9,18 +9,18 @@
   <!-- Spawn simulated husky agv -->
   <include file="$(find rbe594_asars)/launch/spawn_husky.launch" />
 
-  <!-- Run AMCL -->
-  <include file="$(find husky_navigation)/launch/amcl.launch">
-    <arg name="use_map_topic" value="true"/>
-  </include>
 
   <!-- Run Move Base -->
-  <include file="$(find husky_navigation)/launch/move_base.launch">
-    <arg name="no_static_map" value="false"/>
-    
+  <include file="$(find rbe594_asars)/launch/move_base.launch">
+    <arg name="no_static_map" value="false"/>    
   </include>
 
-  <!-- Start rviz visualization with preset config -->
+ <!-- Run AMCL -->
+<!--   <include file="$(find husky_navigation)/launch/amcl.launch">
+    <arg name="use_map_topic" value="false"/>
+  </include> 
+
+ -->  <!-- Start rviz visualization with preset config -->
   <node pkg="rviz" type="rviz" name="rviz" args="-d $(find rbe594_asars)/config/rviz_config.rviz" output="screen"/>
 
   <!-- Start occupancy grid generator node -->
@@ -28,5 +28,12 @@
 
   <!-- Start agv planning and control node -->
   <node pkg="asars_global_planner" name="asars_global_planner" type="visiting_order_generator_node" output="screen"> </node> 
+
+<node pkg="tf" type="static_transform_publisher" name="odom_to_map"
+    args="0 0 0 0 0 0  /map /odom 100" />
+
+ <node pkg="robot_localization" name="robot_localization" type="navsat_transform_node" output="screen"> 
+        <param name="broadcast_cartesian_transform" value="true"/> 
+  </node>  
 
 </launch>
