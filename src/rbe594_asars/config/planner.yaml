@@ -3,14 +3,14 @@ recovery_behaviour_enabled: true
 
 NavfnROS:
   allow_unknown: true # Specifies whether or not to allow navfn to create plans that traverse unknown space.
-  default_tolerance: 0.1 # A tolerance on the goal point for the planner.
+  default_tolerance: 2 # A tolerance on the goal point for the planner.
 
 TrajectoryPlannerROS:
   # Robot Configuration Parameters
   acc_lim_x: 2.5
   acc_lim_theta:  3.2
 
-  max_vel_x: 1.0
+  max_vel_x: 10.0
   min_vel_x: 0.0
 
   max_vel_theta: 1.0
@@ -21,8 +21,8 @@ TrajectoryPlannerROS:
   escape_vel: -0.1
 
   # Goal Tolerance Parameters
-  yaw_goal_tolerance: 0.1
-  xy_goal_tolerance: 0.2
+  yaw_goal_tolerance: 1
+  xy_goal_tolerance: 3
   latch_xy_goal_tolerance: false
 
   # Forward Simulation Parameters
@@ -53,7 +53,7 @@ TrajectoryPlannerROS:
 
 DWAPlannerROS:
   # Robot configuration parameters  
-  acc_lim_x: 2.5
+  acc_lim_x: 5
   acc_lim_y: 0
   acc_lim_th: 3.2
 
@@ -63,13 +63,13 @@ DWAPlannerROS:
   min_vel_y: 0
 
   max_vel_trans: 10
-  min_vel_trans: 0.1
+  min_vel_trans: 0
   max_vel_rot: 4.0
   min_vel_rot: 0.2
 
   # Goal Tolerance Parameters
-  yaw_goal_tolerance: 0.1
-  xy_goal_tolerance: 0.2
+  yaw_goal_tolerance: 2
+  xy_goal_tolerance: 2
   latch_xy_goal_tolerance: false
 
   # # Forward Simulation Parameters
@@ -110,6 +110,6 @@ TebLocalPlannerROS:
 
     # Goal Tolerance Parameters
     yaw_goal_tolerance: 0.5
-    xy_goal_tolerance: 0.2
+    xy_goal_tolerance: 2
     latch_xy_goal_tolerance: false
 
