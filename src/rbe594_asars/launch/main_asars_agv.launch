@@ -29,11 +29,12 @@
   <!-- Start agv planning and control node -->
   <node pkg="asars_global_planner" name="asars_global_planner" type="visiting_order_generator_node" output="screen"> </node> 
 
-<node pkg="tf" type="static_transform_publisher" name="odom_to_map"
-    args="0 0 0 0 0 0  /map /odom 100" />
 
- <node pkg="robot_localization" name="robot_localization" type="navsat_transform_node" output="screen"> 
+ <node pkg="robot_localization" name="navsat_transform_node" type="navsat_transform_node" output="screen"> 
         <param name="broadcast_cartesian_transform" value="true"/> 
   </node>  
+  
+<node pkg="tf" type="static_transform_publisher" name="odom_to_map"
+    args="0 0 0 0 0 0  /map /odom 50" />
 
 </launch>
