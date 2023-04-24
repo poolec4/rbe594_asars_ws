@@ -25,6 +25,7 @@ global_path = {'x': [], 'y': []}
 actual_path = {'x': [], 'y': []}
 cmd_vel = []
 test_globalPath = Path
+global_plan_itr = 0
 
 # Measure time
 start = 0
@@ -101,14 +102,16 @@ def goal_reached_cb(goal_data):
         itr = 1
 
 def global_plan_cb(globaPlan_data):
-    global test_globalPath
-    test_globalPath = globaPlan_data
+    global test_globalPath, global_plan_itr
     
-    for waypoint in globaPlan_data.poses:
-        # print("(x,y) (%.2f, %.2f)" % (waypoint.pose.position.x, waypoint.pose.position.y))
-        global_path['x'].append(waypoint.pose.position.x)
-        global_path['y'].append(waypoint.pose.position.y)
+    if global_plan_itr == 0:    
+        test_globalPath = globaPlan_data    
+        for waypoint in globaPlan_data.poses:
+            # print("(x,y) (%.2f, %.2f)" % (waypoint.pose.position.x, waypoint.pose.position.y))
+            global_path['x'].append(waypoint.pose.position.x)
+            global_path['y'].append(waypoint.pose.position.y)
 
+    global_plan_itr = 1
 
 def local_plan_cb(localPlan_data):
     # for waypoint in localPlan_data.poses:
@@ -134,7 +137,7 @@ def setup_ros_comm():
         rospy.Subscriber("/move_base/DWAPlannerROS/local_plan", Path, local_plan_cb)
     else:
         rospy.Subscriber("/move_base/TebLocalPlannerROS/local_plan", Path, local_plan_cb)
-    rospy.Subscriber("/move_base/GlobalPlanner/plan", Path, global_plan_cb)
+    rospy.Subscriber("/move_base/NavfnROS/plan", Path, global_plan_cb)
 
     rospy.Subscriber("/husky_velocity_controller/cmd_vel", Twist, cmd_vel_cb)
 
@@ -177,7 +180,7 @@ if __name__ == "__main__":
     setup_ros_comm()
     # plot_all()
     # test_victims_loc()
-    test_lp()
+    # test_lp()
     rospy.spin()
 
 

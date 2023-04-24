@@ -120,7 +120,7 @@ def save_victims_loc(victims_loc_poseArray):
 
 
 # Returns geometry_msgs.msg.PoseArray
-def load_victims_loc(req):
+def load_victims_loc():
     data = {}
     if os.path.exists(DEFAULT_VICTIMS_LOC_FILE):
         with open(DEFAULT_VICTIMS_LOC_FILE, 'rb') as fd:
@@ -129,11 +129,5 @@ def load_victims_loc(req):
     else:
         print('victimsLoc_filePath file not found')
 
-    return VictimsLocResponse(data['random_victims_loc'])
-
-
-def start_victims_loc_service():
-    victims_loc_srv = rospy.Service('/asars/victims_loc', VictimsLoc, load_victims_loc)
-    return victims_loc_srv
-
+    return data['random_victims_loc']
 
