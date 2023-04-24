@@ -8,7 +8,6 @@ Panels:
         - /Status1
         - /Sensing1
         - /Navigation1
-        - /Path1
       Splitter Ratio: 0.49492400884628296
     Tree Height: 573
   - Class: rviz/Selection
@@ -356,7 +355,7 @@ Visualization Manager:
           Buffer Length: 1
           Class: rviz/Path
           Color: 25; 255; 0
-          Enabled: false
+          Enabled: true
           Head Diameter: 0.30000001192092896
           Head Length: 0.20000000298023224
           Length: 0.30000001192092896
@@ -375,7 +374,7 @@ Visualization Manager:
           Shaft Length: 0.10000000149011612
           Topic: /move_base/NavfnROS/plan
           Unreliable: false
-          Value: false
+          Value: true
         - Alpha: 1
           Buffer Length: 1
           Class: rviz/Path
@@ -402,30 +401,6 @@ Visualization Manager:
           Value: true
       Enabled: true
       Name: Navigation
-    - Alpha: 1
-      Buffer Length: 1
-      Class: rviz/Path
-      Color: 252; 233; 79
-      Enabled: true
-      Head Diameter: 0.30000001192092896
-      Head Length: 0.20000000298023224
-      Length: 0.30000001192092896
-      Line Style: Lines
-      Line Width: 0.029999999329447746
-      Name: Path
-      Offset:
-        X: 0
-        Y: 0
-        Z: 0
-      Pose Color: 255; 85; 255
-      Pose Style: None
-      Queue Size: 10
-      Radius: 0.029999999329447746
-      Shaft Diameter: 0.10000000149011612
-      Shaft Length: 0.10000000149011612
-      Topic: /move_base/TebLocalPlannerROS/global_plan
-      Unreliable: false
-      Value: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -452,7 +427,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 474.542724609375
+      Distance: 79.256103515625
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -460,17 +435,17 @@ Visualization Manager:
         Value: false
       Field of View: 0.7853981852531433
       Focal Point:
-        X: 46.29789352416992
-        Y: 30.288286209106445
-        Z: 8.120747566223145
+        X: 6.570329189300537
+        Y: 5.656211853027344
+        Z: -6.408562660217285
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.9147969484329224
+      Pitch: 1.0197973251342773
       Target Frame: <Fixed Frame>
-      Yaw: 5.200412750244141
+      Yaw: 4.670410633087158
     Saved: ~
 Window Geometry:
   Displays:
@@ -488,5 +463,5 @@ Window Geometry:
   Views:
     collapsed: false
   Width: 1086
-  X: 746
-  Y: 143
+  X: 66
+  Y: 193
