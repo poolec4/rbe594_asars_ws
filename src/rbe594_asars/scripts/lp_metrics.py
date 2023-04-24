@@ -21,10 +21,12 @@ from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
 from rbe594_asars.srv import VictimsLoc, VictimsLocResponse
 lp_planner = "TEB"
 
+HOME_DIR = os.path.expanduser('~')
+DEFAULT_LP_METRICS_FILE = os.path.join(HOME_DIR, '.ros/lp_metrics.pickle')
+
 global_path = {'x': [], 'y': []}
 actual_path = {'x': [], 'y': []}
 cmd_vel = []
-test_globalPath = Path
 global_plan_itr = 0
 
 # Measure time
@@ -32,34 +34,32 @@ start = 0
 end = 0
 itr = 1
 
-def odom_cb(odometry_data):
-    # print('odom_cb')
-    if  odometry_data.twist.twist.linear.x > 0.1 or odometry_data.twist.twist.linear.y > 0.1:
-        # print("(x,y) (%.2f, %.2f)" % (odometry_data.pose.pose.position.x, odometry_data.pose.pose.position.y))
-        actual_path['x'].append(odometry_data.pose.pose.position.x)
-        actual_path['y'].append(odometry_data.pose.pose.position.y)
+# def odom_cb(odometry_data):
+#     # print('odom_cb')
+#     if  odometry_data.twist.twist.linear.x > 0.1 or odometry_data.twist.twist.linear.y > 0.1:
+#         # print("(x,y) (%.2f, %.2f)" % (odometry_data.pose.pose.position.x, odometry_data.pose.pose.position.y))
+#         actual_path['x'].append(odometry_data.pose.pose.position.x)
+#         actual_path['y'].append(odometry_data.pose.pose.position.y)
 
 
 def save_data():
     new_data =  {'global_path': global_path,
                  'actual_path': actual_path,
                  'cmd_vel':     cmd_vel,
-                 'time_taken':  end-start,
-                 'test_globalPath': test_globalPath}
+                 'time_taken':  end-start}
     
     data = {}
-    filePath = 'metrics.pickle'
-    if os.path.exists(filePath):
-        with open('metrics.pickle', 'rb') as fd:
+    if os.path.exists(DEFAULT_LP_METRICS_FILE):
+        with open(DEFAULT_LP_METRICS_FILE, 'rb') as fd:
             data = pickle.load(fd)
     data[lp_planner] = new_data
-    with open('metrics.pickle', 'wb') as fd:
+    with open(DEFAULT_LP_METRICS_FILE, 'wb') as fd:
         pickle.dump(data, fd, protocol=pickle.HIGHEST_PROTOCOL)
 
 
 def plot_all():
     # load data
-    with open('metrics.pickle', 'rb') as fd:
+    with open(DEFAULT_LP_METRICS_FILE, 'rb') as fd:
         data = pickle.load(fd)
 
     # plot path in 2D
@@ -89,6 +89,7 @@ def goal_reached_cb(goal_data):
     # For more info, run $ rostopic info /move_base/result --> $ rosmsg show move_base_msgs/MoveBaseActionResult
     # status == 3 --> SUCCEEDED
     # status == 9 --> LOST
+    global itr
     if goal_data.status.status == 3 or goal_data.status.status == 9:
         global end
         end = timer()
@@ -102,16 +103,16 @@ def goal_reached_cb(goal_data):
         itr = 1
 
 def global_plan_cb(globaPlan_data):
-    global test_globalPath, global_plan_itr
+    # global global_plan_itr
     
-    if global_plan_itr == 0:    
-        test_globalPath = globaPlan_data    
-        for waypoint in globaPlan_data.poses:
-            # print("(x,y) (%.2f, %.2f)" % (waypoint.pose.position.x, waypoint.pose.position.y))
-            global_path['x'].append(waypoint.pose.position.x)
-            global_path['y'].append(waypoint.pose.position.y)
+    # if global_plan_itr == 0:    
+    # for waypoint in globaPlan_data.poses:
+        # print("(x,y) (%.2f, %.2f)" % (waypoint.pose.position.x, waypoint.pose.position.y))
+    global_path['x'].append(globaPlan_data.poses[0].pose.position.x)
+    global_path['y'].append(globaPlan_data.poses[0].pose.position.y)
 
-    global_plan_itr = 1
+    # global_plan_itr = 1
+
 
 def local_plan_cb(localPlan_data):
     # for waypoint in localPlan_data.poses:
@@ -135,24 +136,14 @@ def setup_ros_comm():
     rospy.Subscriber("/move_base/result", MoveBaseActionResult, goal_reached_cb)
     if lp_planner == 'DWA':
         rospy.Subscriber("/move_base/DWAPlannerROS/local_plan", Path, local_plan_cb)
+        rospy.Subscriber("/move_base/DWAPlannerROS/global_plan", Path, global_plan_cb)
     else:
         rospy.Subscriber("/move_base/TebLocalPlannerROS/local_plan", Path, local_plan_cb)
-    rospy.Subscriber("/move_base/NavfnROS/plan", Path, global_plan_cb)
+        rospy.Subscriber("/move_base/TebLocalPlannerROS/global_plan", Path, global_plan_cb)
+    # rospy.Subscriber("/move_base/NavfnROS/plan", Path, global_plan_cb)
 
     rospy.Subscriber("/husky_velocity_controller/cmd_vel", Twist, cmd_vel_cb)
 
-    # spin() simply keeps python from exiting until this node is stopped
-    # rospy.spin()
-
-def test_victims_loc():
-    rospy.wait_for_service('VictimsLoc')
-    try:
-        srv_VictimsLoc = rospy.ServiceProxy('VictimsLoc', VictimsLoc)
-        resp1 = srv_VictimsLoc()
-        for id, loc in enumerate(resp1.victims_pose.poses):
-            print(id, ": \n", loc)
-    except rospy.ServiceException as e:
-        print("Service call failed: %s"%e)
 
 
 def test_lp():
