@@ -1,8 +1,10 @@
+#pragma once
+
 #include "ros/ros.h"
 
 #include "asars_global_planner/GenerateVisitingOrder.h"
 #include "geometry_msgs/PoseWithCovarianceStamped.h"
-#pragma once
+
 
 class VisitingOrderGenerator {
 public:
@@ -16,4 +18,7 @@ public:
 
   void robot_pose_callback(
       const geometry_msgs::PoseWithCovarianceStamped::ConstPtr &msg);
+
+  ros::Publisher goal_reached_pub_;
+
 };

@@ -8,6 +8,7 @@
 #include <move_base_msgs/MoveBaseActionFeedback.h>
 #include <nav_msgs/OccupancyGrid.h>
 #include <nav_msgs/SetMap.h>
+#include <std_msgs/Bool.h>
 
 #include <move_base_msgs/MoveBaseActionResult.h>
 using namespace std::chrono;
@@ -78,6 +79,9 @@ bool VisitingOrderGenerator::visiting_order_srv_cb(
       ROS_ERROR("Move base failed");
     }
   }
+  std_msgs::Bool goal_reached;
+  goal_reached.data = true;
+  goal_reached_pub_.publish(goal_reached);
 
   return true;
 }
@@ -109,6 +113,9 @@ int main(int argc, char **argv) {
                          &visiting_order_generator);
   ros::Subscriber sub =
       n.subscribe("/move_base/NavfnROS/plan", 10, chatterCallback);
+
+  visiting_order_generator.goal_reached_pub_ = n.advertise<std_msgs::Bool>("asars_all_victims_reached", 1);
+
   ros::spin();
   ROS_INFO("Duration is %d", duration_);
 

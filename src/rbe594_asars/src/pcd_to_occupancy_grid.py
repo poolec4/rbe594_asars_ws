@@ -103,12 +103,11 @@ def start_planner_cb(req):
         point_msg_array = [poses.position for poses in victim_locations.poses]
         victims = []
         for pose in victim_locations.poses:
-            
             victims.append(Victim(len(victims), [pose.position.x, pose.position.y]))
 
         spawn_victims(victims)
         resp1 = generate_visiting_order_srv(point_msg_array)
-        return resp1.sum
+        return resp1.victim_visiting_order
     except rospy.ServiceException as e:
         print("Service call failed: %s"%e)
 
