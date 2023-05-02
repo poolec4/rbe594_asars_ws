@@ -4,11 +4,6 @@ An Autonomous Search and Rescue System (ASARS) created for the Spring 2023 RBE 5
 
 ## Installation
 
-### Option 1:
-
-Run `instal.sh` (TBD)
-
-### Option 2: 
 Clone repository:
 ```bash
 cd ~/
@@ -52,9 +47,14 @@ source ~/rbe594_asars_ws/devel/setup.bash
 
 ## Full Simulation
 
-This will run the full ASARS simulation. It will begin by generating the world and spawning the victims. Then, it will begin the UAV mapping and scanning operations. Once this is complete, the occupancy grid is generated and the AGV planning commences.
+This will run the UAV part ASARS simulation. It will begin by generating the world and spawning the victims. Then, it will begin the UAV mapping and scanning operations. Once this is complete, the occupancy grid is generated:
 ```bash
-roslaunch rbe594_asars main_asars_world.launch
+roslaunch rbe594_asars main_asars_uav.launch
+```
+
+Then, the AGV section can be run which will begin the path planning process and the AGV will begin to deliver supplies to victims:
+```bash
+roslaunch rbe594_asars main_asars_agv.launch
 ```
 
 ## Hector Test
@@ -70,10 +70,6 @@ This will run Husky AGV in a test world and start the teleop menu. It will also 
 ```bash
 roslaunch rbe594_asars husky_world.launch
 ```
-
-## Full Simulation
-TBD
-
 
 ## World Test
 
